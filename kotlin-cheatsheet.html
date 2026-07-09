@@ -839,6 +839,18 @@ list.<span class="fn">joinToString</span>(<span class="str">""</span>) { it.toSt
     <span class="cmt">// Post-order: process node here</span>
 }</div>
         </div>
+
+        <div class="card" data-ops="dfs iterative stack tree graph search">
+          <div class="card-op">DFS (Iterative)</div>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">val</span> stack = <span class="fn">ArrayDeque</span>&lt;TreeNode&gt;()
+stack.<span class="fn">addLast</span>(root)
+<span class="kw">while</span> (stack.<span class="fn">isNotEmpty</span>()) {
+    <span class="kw">val</span> node = stack.<span class="fn">removeLast</span>()
+    <span class="cmt">// process node</span>
+    <span class="kw">if</span> (node.right != <span class="kw">null</span>) stack.<span class="fn">addLast</span>(node.right!!)
+    <span class="kw">if</span> (node.left != <span class="kw">null</span>) stack.<span class="fn">addLast</span>(node.left!!)
+}</div>
+        </div>
         <div class="card" data-ops="graph adjacency list representation">
           <div class="card-op">Graph Adjacency List</div>
           <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="cmt">// Using Array of Lists (faster if n known)</span>
