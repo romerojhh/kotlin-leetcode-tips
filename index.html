@@ -27,6 +27,8 @@
     --c-queue:  #D4537E; --c-queue-bg:  #2e0f1e;
     --c-pq:     #1D9E75; --c-pq-bg:     #0a2a1e;
     --c-deque:  #888780; --c-deque-bg:  #1e1f22;
+    --c-patterns:#e06c75; --c-patterns-bg: #2e0f14;
+    --c-math:    #56b6c2; --c-math-bg:    #0e2d30;
 
     --radius: 8px;
     --mono: 'JetBrains Mono', monospace;
@@ -40,6 +42,7 @@
     --c-array-bg:  #deeeff; --c-list-bg:  #eaf3de; --c-map-bg:   #eeedfe;
     --c-set-bg:    #faeeda; --c-stack-bg: #fce8e8; --c-queue-bg: #fbeaf0;
     --c-pq-bg:     #e1f5ee; --c-deque-bg: #f1efe8;
+    --c-patterns-bg: #fce8eb; --c-math-bg: #e1f5f7;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -321,6 +324,12 @@
     <button class="nav-btn" onclick="show('trees')">
       <div class="nav-dot" style="background:#85d62c"></div>Trees & Graphs
     </button>
+    <button class="nav-btn" onclick="show('patterns')">
+      <div class="nav-dot" style="background:var(--c-patterns)"></div>Templates
+    </button>
+    <button class="nav-btn" onclick="show('math')">
+      <div class="nav-dot" style="background:var(--c-math)"></div>Math & Bits
+    </button>
     <button class="nav-btn" onclick="show('advanced')">
       <div class="nav-dot" style="background:#f0ad4e"></div>Advanced
     </button>
@@ -434,12 +443,24 @@ a.<span class="fn">sortDescending</span>()</div>
     prefix[i+<span class="num">1</span>] = prefix[i] + a[i]
 <span class="cmt">// range sum [l,r] = prefix[r+1] - prefix[l]</span></div>
         </div>
-        <div class="card" data-ops="2d grid matrix rows cols">
-          <div class="card-op">2-D grid</div>
-          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">val</span> grid = <span class="fn">Array</span>(rows) { <span class="fn">IntArray</span>(cols) }
-grid[r][c] = <span class="num">1</span>
-<span class="cmt">// n×n identity:
-// Array(n) { i -> IntArray(n) { j -> if (i==j) 1 else 0 } }</span></div>
+        <div class="card" data-ops="2d grid matrix rows cols initialize copy directions traversal">
+          <div class="card-op">2-D Grid / Matrix</div>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="cmt">// Creation &amp; Initialisation</span>
+<span class="kw">val</span> grid = <span class="fn">Array</span>(R) { <span class="fn">IntArray</span>(C) { -<span class="num">1</span> } }     <span class="cmt">// filled with -1</span>
+<span class="kw">val</span> vis  = <span class="fn">Array</span>(R) { <span class="fn">BooleanArray</span>(C) }     <span class="cmt">// filled with false</span>
+
+<span class="cmt">// Dimensions</span>
+<span class="kw">val</span> rows = grid.size; <span class="kw">val</span> cols = grid[<span class="num">0</span>].size
+
+<span class="cmt">// 4-Directions traversal helper</span>
+<span class="kw">val</span> dirs = <span class="fn">arrayOf</span>(<span class="fn">intArrayOf</span>(-<span class="num">1</span>, <span class="num">0</span>), <span class="fn">intArrayOf</span>(<span class="num">1</span>, <span class="num">0</span>), <span class="fn">intArrayOf</span>(<span class="num">0</span>, -<span class="num">1</span>), <span class="fn">intArrayOf</span>(<span class="num">0</span>, <span class="num">1</span>))
+<span class="kw">for</span> (d <span class="kw">in</span> dirs) {
+    <span class="kw">val</span> nr = r + d[<span class="num">0</span>]; <span class="kw">val</span> nc = c + d[<span class="num">1</span>]
+    <span class="kw">if</span> (nr <span class="kw">in</span> <span class="num">0</span> until rows &amp;&amp; nc <span class="kw">in</span> <span class="num">0</span> until cols) { }
+}
+
+<span class="cmt">// Deep Copy</span>
+<span class="kw">val</span> copy = grid.<span class="fn">map</span> { it.<span class="fn">clone</span>() }.<span class="fn">toTypedArray</span>()</div>
         </div>
         <div class="card" data-ops="binary search bisect">
           <div class="card-op">Binary search</div>
@@ -916,11 +937,201 @@ stack.<span class="fn">addLast</span>(root)
       </div>
     </div>
 
+    <!-- ── LEETCODE PATTERNS ── -->
+    <div class="section" data-ds="patterns" id="sec-patterns">
+      <div class="section-header">
+        <span class="section-tag" style="background:var(--c-patterns-bg);color:var(--c-patterns)">LeetCode Patterns</span>
+        <span class="section-note">Standard algorithmic templates</span>
+      </div>
+      <div class="cards">
+        <div class="card" data-ops="binary search lower bound first occurrence">
+          <div class="card-op">Binary Search (Lower Bound)</div>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="cmt">// Find first index &gt;= target (insertion point)</span>
+<span class="kw">fun</span> <span class="fn">lowerBound</span>(a: <span class="fn">IntArray</span>, target: Int): Int {
+    <span class="kw">var</span> lo = <span class="num">0</span>; <span class="kw">var</span> hi = a.size
+    <span class="kw">while</span> (lo &lt; hi) {
+        <span class="kw">val</span> mid = lo + (hi - lo) / <span class="num">2</span>
+        <span class="kw">if</span> (a[mid] &gt;= target) hi = mid
+        <span class="kw">else</span> lo = mid + <span class="num">1</span>
+    }
+    <span class="kw">return</span> lo
+}</div>
+        </div>
+        <div class="card" data-ops="binary search upper bound last occurrence">
+          <div class="card-op">Binary Search (Upper Bound)</div>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="cmt">// Find first index &gt; target</span>
+<span class="kw">fun</span> <span class="fn">upperBound</span>(a: <span class="fn">IntArray</span>, target: Int): Int {
+    <span class="kw">var</span> lo = <span class="num">0</span>; <span class="kw">var</span> hi = a.size
+    <span class="kw">while</span> (lo &lt; hi) {
+        <span class="kw">val</span> mid = lo + (hi - lo) / <span class="num">2</span>
+        <span class="kw">if</span> (a[mid] &gt; target) hi = mid
+        <span class="kw">else</span> lo = mid + <span class="num">1</span>
+    }
+    <span class="kw">return</span> lo
+}</div>
+        </div>
+        <div class="card" data-ops="sliding window fixed size substring array">
+          <div class="card-op">Sliding Window (Fixed Size)</div>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="cmt">// Template for sliding window of fixed size K</span>
+<span class="kw">fun</span> <span class="fn">fixedWindow</span>(a: <span class="fn">IntArray</span>, k: Int): Int {
+    <span class="kw">var</span> sum = <span class="num">0</span>; <span class="kw">var</span> maxVal = <span class="num">0</span>
+    <span class="kw">for</span> (i <span class="kw">in</span> a.indices) {
+        sum += a[i]
+        <span class="kw">if</span> (i &gt;= k) sum -= a[i - k]
+        <span class="kw">if</span> (i &gt;= k - <span class="num">1</span>) maxVal = <span class="fn">maxOf</span>(maxVal, sum)
+    }
+    <span class="kw">return</span> maxVal
+}</div>
+        </div>
+        <div class="card" data-ops="sliding window variable size longest shortest subarray">
+          <div class="card-op">Sliding Window (Variable Size)</div>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="cmt">// Find longest subarray where condition(window) is valid</span>
+<span class="kw">var</span> l = <span class="num">0</span>; <span class="kw">var</span> ans = <span class="num">0</span>
+<span class="kw">for</span> (r <span class="kw">in</span> a.indices) {
+    <span class="fn">updateWindowState</span>(a[r])
+    <span class="kw">while</span> (<span class="fn">windowStateIsInvalid</span>()) {
+        <span class="fn">shrinkWindowState</span>(a[l])
+        l++
+    }
+    ans = <span class="fn">maxOf</span>(ans, r - l + <span class="num">1</span>)
+}</div>
+        </div>
+        <div class="card" data-ops="monotonic stack next greater element linear scan">
+          <div class="card-op">Monotonic Stack (Next Greater)</div>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">val</span> stack = <span class="fn">ArrayDeque</span>&lt;Int&gt;() <span class="cmt">// stores indices</span>
+<span class="kw">val</span> res = <span class="fn">IntArray</span>(a.size) { -<span class="num">1</span> }
+<span class="kw">for</span> (i <span class="kw">in</span> a.indices) {
+    <span class="kw">while</span> (stack.<span class="fn">isNotEmpty</span>() &amp;&amp; a[stack.<span class="fn">last</span>()] &lt; a[i]) {
+        <span class="kw">val</span> prevIdx = stack.<span class="fn">removeLast</span>()
+        res[prevIdx] = a[i]
+    }
+    stack.<span class="fn">addLast</span>(i)
+}</div>
+        </div>
+        <div class="card" data-ops="trie prefix tree insert search startswith">
+          <div class="card-op">Trie (Prefix Tree)</div>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">class</span> TrieNode {
+    <span class="kw">val</span> children = <span class="fn">Array</span>&lt;TrieNode?&gt;(<span class="num">26</span>) { <span class="kw">null</span> }
+    <span class="kw">var</span> isWord = <span class="kw">false</span>
+}
+
+<span class="kw">class</span> Trie {
+    <span class="kw">val</span> root = TrieNode()
+    <span class="kw">fun</span> <span class="fn">insert</span>(word: String) {
+        <span class="kw">var</span> curr = root
+        <span class="kw">for</span> (c <span class="kw">in</span> word) {
+            <span class="kw">val</span> idx = c - <span class="str">'a'</span>
+            <span class="kw">if</span> (curr.children[idx] == <span class="kw">null</span>) curr.children[idx] = TrieNode()
+            curr = curr.children[idx]!!
+        }
+        curr.isWord = <span class="kw">true</span>
+    }
+}</div>
+        </div>
+        <div class="card" data-ops="dijkstra shortest path priorityqueue graph">
+          <div class="card-op">Dijkstra's (Shortest Path)</div>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="cmt">// graph: List&lt;List&lt;Pair&lt;Int, Int&gt;&gt;&gt; (node, weight)</span>
+<span class="kw">fun</span> <span class="fn">dijkstra</span>(start: Int, n: Int): IntArray {
+    <span class="kw">val</span> dist = <span class="fn">IntArray</span>(n) { Int.MAX_VALUE }
+    dist[start] = <span class="num">0</span>
+    <span class="kw">val</span> pq = <span class="fn">PriorityQueue</span>&lt;Pair&lt;Int, Int&gt;&gt;(<span class="fn">compareBy</span> { it.second })
+    pq.<span class="fn">add</span>(start to <span class="num">0</span>)
+    <span class="kw">while</span> (pq.<span class="fn">isNotEmpty</span>()) {
+        <span class="kw">val</span> (u, d) = pq.<span class="fn">poll</span>()
+        <span class="kw">if</span> (d &gt; dist[u]) <span class="kw">continue</span>
+        <span class="kw">for</span> ((v, w) <span class="kw">in</span> graph[u]) {
+            <span class="kw">if</span> (dist[u] + w &lt; dist[v]) {
+                dist[v] = dist[u] + w
+                pq.<span class="fn">add</span>(v to dist[v])
+            }
+        }
+    }
+    <span class="kw">return</span> dist
+}</div>
+        </div>
+        <div class="card" data-ops="topological sort graph cycle kahns bfs">
+          <div class="card-op">Topological Sort (Kahn's)</div>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="cmt">// adj: Array&lt;MutableList&lt;Int&gt;&gt;</span>
+<span class="kw">val</span> indegree = <span class="fn">IntArray</span>(n)
+<span class="kw">for</span> (u <span class="kw">in</span> <span class="num">0</span> until n)
+    <span class="kw">for</span> (v <span class="kw">in</span> adj[u]) indegree[v]++
+
+<span class="kw">val</span> q = <span class="fn">ArrayDeque</span>&lt;Int&gt;()
+<span class="kw">for</span> (i <span class="kw">in</span> <span class="num">0</span> until n) <span class="kw">if</span> (indegree[i] == <span class="num">0</span>) q.<span class="fn">addLast</span>(i)
+
+<span class="kw">val</span> order = <span class="fn">mutableListOf</span>&lt;Int&gt;()
+<span class="kw">while</span> (q.<span class="fn">isNotEmpty</span>()) {
+    <span class="kw">val</span> u = q.<span class="fn">removeFirst</span>()
+    order.<span class="fn">add</span>(u)
+    <span class="kw">for</span> (v <span class="kw">in</span> adj[u]) {
+        indegree[v]--
+        <span class="kw">if</span> (indegree[v] == <span class="num">0</span>) q.<span class="fn">addLast</span>(v)
+    }
+}
+<span class="cmt">// cycle if order.size &lt; n</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MATH & BIT MANIPULATION ── -->
+    <div class="section" data-ds="math" id="sec-math">
+      <div class="section-header">
+        <span class="section-tag" style="background:var(--c-math-bg);color:var(--c-math)">Math &amp; Bitwise</span>
+        <span class="section-note">Bit hacks · Gcd · Fast exponentiation</span>
+      </div>
+      <div class="cards">
+        <div class="card" data-ops="bit shift shl shr ushr operator logical arithmetic">
+          <div class="card-op">Kotlin Bitwise Operators</div>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">val</span> a = x <span class="fn">shl</span> <span class="num">1</span>   <span class="cmt">// x &lt;&lt; 1 (signed shift left)</span>
+<span class="kw">val</span> b = x <span class="fn">shr</span> <span class="num">1</span>   <span class="cmt">// x &gt;&gt; 1 (signed shift right)</span>
+<span class="kw">val</span> c = x <span class="fn">ushr</span> <span class="num">1</span>  <span class="cmt">// x &gt;&gt;&gt; 1 (unsigned shift right)</span>
+<span class="kw">val</span> d = x <span class="fn">and</span> y    <span class="cmt">// x &amp; y</span>
+<span class="kw">val</span> e = x <span class="fn">or</span> y     <span class="cmt">// x | y</span>
+<span class="kw">val</span> f = x <span class="fn">xor</span> y    <span class="cmt">// x ^ y</span>
+<span class="kw">val</span> g = x.<span class="fn">inv</span>()    <span class="cmt">// ~x (bitwise inversion)</span></div>
+        </div>
+        <div class="card" data-ops="bit hacks check set clear toggle power of two binary">
+          <div class="card-op">Common Bit Hacks</div>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="cmt">// Check if i-th bit is set</span>
+<span class="kw">fun</span> <span class="fn">isSet</span>(n: Int, i: Int) = (n <span class="fn">and</span> (<span class="num">1</span> <span class="fn">shl</span> i)) != <span class="num">0</span>
+
+<span class="cmt">// Set i-th bit to 1</span>
+<span class="kw">fun</span> <span class="fn">setBit</span>(n: Int, i: Int) = n <span class="fn">or</span> (<span class="num">1</span> <span class="fn">shl</span> i)
+
+<span class="cmt">// Clear i-th bit to 0</span>
+<span class="kw">fun</span> <span class="fn">clearBit</span>(n: Int, i: Int) = n <span class="fn">and</span> (<span class="num">1</span> <span class="fn">shl</span> i).<span class="fn">inv</span>()
+
+<span class="cmt">// Toggle i-th bit</span>
+<span class="kw">fun</span> <span class="fn">toggleBit</span>(n: Int, i: Int) = n <span class="fn">xor</span> (<span class="num">1</span> <span class="fn">shl</span> i)
+
+<span class="cmt">// Check if n is a power of 2</span>
+<span class="kw">fun</span> <span class="fn">isPowerOfTwo</span>(n: Int) = n &gt; <span class="num">0</span> &amp;&amp; (n <span class="fn">and</span> (n - <span class="num">1</span>)) == <span class="num">0</span></div>
+        </div>
+        <div class="card" data-ops="gcd greatest common divisor euclidean lcm">
+          <div class="card-op">GCD &amp; LCM</div>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">fun</span> <span class="fn">gcd</span>(a: Int, b: Int): Int = <span class="kw">if</span> (b == <span class="num">0</span>) a <span class="kw">else</span> <span class="fn">gcd</span>(b, a % b)
+<span class="kw">fun</span> <span class="fn">lcm</span>(a: Int, b: Int): Int = (a / <span class="fn">gcd</span>(a, b)) * b</div>
+        </div>
+        <div class="card" data-ops="fast power binary exponentiation mod">
+          <div class="card-op">Binary Exponentiation (a^b % mod)</div>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">fun</span> <span class="fn">fastPower</span>(base: Long, exp: Long, mod: Long): Long {
+    <span class="kw">var</span> res = <span class="num">1L</span>; <span class="kw">var</span> b = base % mod; <span class="kw">var</span> e = exp
+    <span class="kw">while</span> (e &gt; <span class="num">0</span>) {
+        <span class="kw">if</span> (e % <span class="num">2</span> == <span class="num">1L</span>) res = (res * b) % mod
+        b = (b * b) % mod
+        e /= <span class="num">2</span>
+    }
+    <span class="kw">return</span> res
+}</div>
+        </div>
+      </div>
+    </div>
+
   </main>
 </div>
 
 <script>
-  const ALL_DS = ['array','list','map','set','stack','queue','pq','deque','strings','trees','advanced'];
+  const ALL_DS = ['array','list','map','set','stack','queue','pq','deque','strings','trees','patterns','math','advanced'];
 
   function show(id) {
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
