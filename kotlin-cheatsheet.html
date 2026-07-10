@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kotlin DS Cheatsheet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
 <style>
   :root {
     --bg: #0f1117;
@@ -25,19 +29,17 @@
     --c-deque:  #888780; --c-deque-bg:  #1e1f22;
 
     --radius: 8px;
-    --mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
-    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
 
-  @media (prefers-color-scheme: light) {
-    :root {
-      --bg: #f5f6fa; --bg2: #ffffff; --bg3: #eef0f7;
-      --border: #dde0ee; --text: #1a1c2a; --muted: #5a5f7a; --dim: #9a9fb6;
-      --code-bg: #f0f1f8;
-      --c-array-bg:  #deeeff; --c-list-bg:  #eaf3de; --c-map-bg:   #eeedfe;
-      --c-set-bg:    #faeeda; --c-stack-bg: #fce8e8; --c-queue-bg: #fbeaf0;
-      --c-pq-bg:     #e1f5ee; --c-deque-bg: #f1efe8;
-    }
+  :root[data-theme="light"] {
+    --bg: #f5f6fa; --bg2: #ffffff; --bg3: #eef0f7;
+    --border: #dde0ee; --text: #1a1c2a; --muted: #5a5f7a; --dim: #9a9fb6;
+    --code-bg: #f0f1f8;
+    --c-array-bg:  #deeeff; --c-list-bg:  #eaf3de; --c-map-bg:   #eeedfe;
+    --c-set-bg:    #faeeda; --c-stack-bg: #fce8e8; --c-queue-bg: #fbeaf0;
+    --c-pq-bg:     #e1f5ee; --c-deque-bg: #f1efe8;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -46,7 +48,7 @@
     background: var(--bg);
     color: var(--text);
     font-family: var(--sans);
-    font-size: 14px;
+    font-size: 15px;
     line-height: 1.6;
     min-height: 100vh;
   }
@@ -68,9 +70,7 @@
     padding: 3px 10px; font-size: 11px; color: #7F77DD; font-weight: 500;
     margin-left: auto;
   }
-  @media (prefers-color-scheme: light) {
-    .kotlin-badge { background: #eeedfe; border-color: #7F77DD55; }
-  }
+  :root[data-theme="light"] .kotlin-badge { background: #eeedfe; border-color: #7F77DD55; }
   .k-dot { width: 7px; height: 7px; border-radius: 50%; background: #7F77DD; }
 
   /* ── Layout ── */
@@ -101,7 +101,7 @@
     display: flex; align-items: center; gap: 8px;
     padding: 6px 8px; border-radius: 6px; cursor: pointer;
     border: none; background: none; color: var(--muted);
-    font-family: var(--sans); font-size: 13px;
+    font-family: var(--sans); font-size: 14px;
     text-align: left; width: 100%; transition: background .12s, color .12s;
   }
   .nav-btn:hover { background: var(--bg3); color: var(--text); }
@@ -129,7 +129,7 @@
     width: 100%; padding: 8px 12px 8px 34px;
     background: var(--bg2); border: 1px solid var(--border);
     border-radius: var(--radius); color: var(--text);
-    font-family: var(--sans); font-size: 13px; outline: none;
+    font-family: var(--sans); font-size: 14px; outline: none;
     transition: border-color .15s;
   }
   #search:focus { border-color: var(--muted); }
@@ -154,21 +154,47 @@
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 10px;
   }
-  .card {
-    background: var(--bg2); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 12px 14px;
-  }
+
   .card-op {
     font-size: 11px; font-weight: 600; letter-spacing: .04em;
     text-transform: uppercase; color: var(--muted);
     margin-bottom: 6px;
   }
+
+
+  .theme-toggle {
+    background: none; border: none; font-size: 16px; cursor: pointer;
+    color: var(--text); display: flex; align-items: center; justify-content: center;
+    padding: 6px; border-radius: 50%; transition: background 0.2s;
+    margin-left: 10px;
+  }
+  .theme-toggle:hover { background: var(--bg3); }
+
+  .card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 12px 14px;
+    position: relative; transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+
   .card-code {
     font-family: var(--mono); font-size: 12px; line-height: 1.7;
     background: var(--code-bg); border-radius: 5px;
     padding: 10px 12px; overflow-x: auto; white-space: pre;
-    color: var(--text);
+    color: var(--text); position: relative;
   }
+
+  .copy-btn {
+    position: absolute; top: 6px; right: 6px;
+    background: var(--bg2); border: 1px solid var(--border);
+    color: var(--muted); padding: 4px 8px; border-radius: 4px;
+    font-size: 10px; cursor: pointer; opacity: 0;
+    transition: opacity 0.2s, color 0.2s, background 0.2s;
+  }
+  .card-code:hover .copy-btn { opacity: 1; }
+  .copy-btn:hover { background: var(--bg3); color: var(--text); }
+  .copy-btn.copied { background: #1D9E75; color: #fff; border-color: #1D9E75; opacity: 1; }
+
   /* syntax highlights */
   .kw  { color: #7F77DD; }
   .fn  { color: #56b6c2; }
@@ -225,7 +251,7 @@
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
   /* mobile */
-  @media (max-width: 640px) {
+  @media (max-width: 768px) {
     .layout { flex-direction: column; height: auto; overflow: visible; }
     aside { width: 100%; height: auto; flex-direction: row; flex-wrap: wrap; border-right: none; border-bottom: 1px solid var(--border); }
     main { overflow-y: visible; }
@@ -233,6 +259,12 @@
 
   .hidden { display: none !important; }
 </style>
+
+<script>
+  const initTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+  document.documentElement.setAttribute('data-theme', initTheme);
+</script>
+
 </head>
 <body>
 
@@ -241,7 +273,13 @@
     <div class="header-title">Kotlin DS Cheatsheet</div>
     <div class="header-sub">Interview reference — collections, patterns, complexity</div>
   </div>
+
   <div class="kotlin-badge"><div class="k-dot"></div>Kotlin</div>
+  <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme" id="theme-btn">
+    <svg id="moon-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="hidden"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+    <svg id="sun-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="hidden"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+  </button>
+
 </header>
 
 <div class="layout">
@@ -273,6 +311,18 @@
     </button>
     <button class="nav-btn" onclick="show('deque')">
       <div class="nav-dot" style="background:var(--c-deque)"></div>Deque
+    </button>
+
+
+    <div class="nav-label" style="margin-top:14px">Algorithms & More</div>
+    <button class="nav-btn" onclick="show('strings')">
+      <div class="nav-dot" style="background:#9b81db"></div>Strings
+    </button>
+    <button class="nav-btn" onclick="show('trees')">
+      <div class="nav-dot" style="background:#85d62c"></div>Trees & Graphs
+    </button>
+    <button class="nav-btn" onclick="show('advanced')">
+      <div class="nav-dot" style="background:#f0ad4e"></div>Advanced
     </button>
 
     <div class="nav-label" style="margin-top:14px">Reference</div>
@@ -353,25 +403,25 @@
       <div class="cards">
         <div class="card" data-ops="create init intarray">
           <div class="card-op">Create</div>
-          <div class="card-code"><span class="kw">val</span> a = <span class="fn">IntArray</span>(<span class="num">5</span>)           <span class="cmt">// [0,0,0,0,0]</span>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">val</span> a = <span class="fn">IntArray</span>(<span class="num">5</span>)           <span class="cmt">// [0,0,0,0,0]</span>
 <span class="kw">val</span> b = <span class="fn">IntArray</span>(<span class="num">5</span>) { it }   <span class="cmt">// [0,1,2,3,4]</span>
 <span class="kw">val</span> c = <span class="fn">intArrayOf</span>(<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>)</div>
         </div>
         <div class="card" data-ops="access read write index update">
           <div class="card-op">Access &amp; update</div>
-          <div class="card-code">a[<span class="num">0</span>]       <span class="cmt">// read</span>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button>a[<span class="num">0</span>]       <span class="cmt">// read</span>
 a[<span class="num">0</span>] = <span class="num">9</span>   <span class="cmt">// write</span>
 a.<span class="fn">lastIndex</span>  <span class="cmt">// a.size - 1</span></div>
         </div>
         <div class="card" data-ops="sort sorted copy">
           <div class="card-op">Sort</div>
-          <div class="card-code">a.<span class="fn">sort</span>()                  <span class="cmt">// in-place</span>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button>a.<span class="fn">sort</span>()                  <span class="cmt">// in-place</span>
 <span class="kw">val</span> s = a.<span class="fn">sortedArray</span>()   <span class="cmt">// new copy</span>
 a.<span class="fn">sortDescending</span>()</div>
         </div>
         <div class="card" data-ops="two pointer swap reverse">
           <div class="card-op">Two-pointer swap</div>
-          <div class="card-code"><span class="kw">var</span> l = <span class="num">0</span>; <span class="kw">var</span> r = a.<span class="fn">lastIndex</span>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">var</span> l = <span class="num">0</span>; <span class="kw">var</span> r = a.<span class="fn">lastIndex</span>
 <span class="kw">while</span> (l &lt; r) {
     <span class="kw">val</span> tmp = a[l]; a[l] = a[r]; a[r] = tmp
     l++; r--
@@ -379,21 +429,21 @@ a.<span class="fn">sortDescending</span>()</div>
         </div>
         <div class="card" data-ops="prefix sum range query cumulative">
           <div class="card-op">Prefix sum</div>
-          <div class="card-code"><span class="kw">val</span> prefix = <span class="fn">IntArray</span>(n + <span class="num">1</span>)
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">val</span> prefix = <span class="fn">IntArray</span>(n + <span class="num">1</span>)
 <span class="kw">for</span> (i <span class="kw">in</span> <span class="num">0</span> until n)
     prefix[i+<span class="num">1</span>] = prefix[i] + a[i]
 <span class="cmt">// range sum [l,r] = prefix[r+1] - prefix[l]</span></div>
         </div>
         <div class="card" data-ops="2d grid matrix rows cols">
           <div class="card-op">2-D grid</div>
-          <div class="card-code"><span class="kw">val</span> grid = <span class="fn">Array</span>(rows) { <span class="fn">IntArray</span>(cols) }
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">val</span> grid = <span class="fn">Array</span>(rows) { <span class="fn">IntArray</span>(cols) }
 grid[r][c] = <span class="num">1</span>
 <span class="cmt">// n×n identity:
 // Array(n) { i -> IntArray(n) { j -> if (i==j) 1 else 0 } }</span></div>
         </div>
         <div class="card" data-ops="binary search bisect">
           <div class="card-op">Binary search</div>
-          <div class="card-code"><span class="kw">val</span> idx = a.<span class="fn">binarySearch</span>(target)
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">val</span> idx = a.<span class="fn">binarySearch</span>(target)
 <span class="cmt">// returns index if found, negative if not
 // manual:</span>
 <span class="kw">var</span> lo = <span class="num">0</span>; <span class="kw">var</span> hi = a.<span class="fn">lastIndex</span>
@@ -418,44 +468,44 @@ grid[r][c] = <span class="num">1</span>
       <div class="cards">
         <div class="card" data-ops="create init mutablelist arraylist">
           <div class="card-op">Create</div>
-          <div class="card-code"><span class="kw">val</span> list = <span class="fn">mutableListOf</span>(<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>)
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">val</span> list = <span class="fn">mutableListOf</span>(<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>)
 <span class="kw">val</span> empty = <span class="fn">ArrayList</span>&lt;Int&gt;()</div>
         </div>
         <div class="card" data-ops="add remove insert delete">
           <div class="card-op">Add / remove</div>
-          <div class="card-code">list.<span class="fn">add</span>(<span class="num">4</span>)
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button>list.<span class="fn">add</span>(<span class="num">4</span>)
 list.<span class="fn">add</span>(<span class="num">0</span>, <span class="num">99</span>)   <span class="cmt">// insert at index</span>
 list.<span class="fn">removeAt</span>(<span class="num">0</span>)
 list.<span class="fn">remove</span>(<span class="num">99</span>)   <span class="cmt">// by value, first match</span></div>
         </div>
         <div class="card" data-ops="access first last get">
           <div class="card-op">Access</div>
-          <div class="card-code">list[<span class="num">0</span>]
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button>list[<span class="num">0</span>]
 list.<span class="fn">first</span>(); list.<span class="fn">last</span>()
 list.<span class="fn">getOrNull</span>(<span class="num">5</span>)   <span class="cmt">// null-safe</span></div>
         </div>
         <div class="card" data-ops="iterate foreach index loop">
           <div class="card-op">Iterate</div>
-          <div class="card-code"><span class="kw">for</span> (x <span class="kw">in</span> list) { }
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">for</span> (x <span class="kw">in</span> list) { }
 list.<span class="fn">forEachIndexed</span> { i, v -> }
 list.<span class="fn">indices</span>   <span class="cmt">// 0..list.lastIndex</span></div>
         </div>
         <div class="card" data-ops="sublist slice range subset">
           <div class="card-op">Slice / sublist</div>
-          <div class="card-code">list.<span class="fn">subList</span>(<span class="num">1</span>, <span class="num">3</span>)  <span class="cmt">// [1,3) — live view</span>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button>list.<span class="fn">subList</span>(<span class="num">1</span>, <span class="num">3</span>)  <span class="cmt">// [1,3) — live view</span>
 list.<span class="fn">slice</span>(<span class="num">1</span>..<span class="num">2</span>)    <span class="cmt">// new list</span>
 list.<span class="fn">take</span>(<span class="num">3</span>)         <span class="cmt">// first 3</span>
 list.<span class="fn">drop</span>(<span class="num">2</span>)         <span class="cmt">// skip first 2</span></div>
         </div>
         <div class="card" data-ops="convert array tolist tointarray">
           <div class="card-op">Convert ↔ array</div>
-          <div class="card-code">list.<span class="fn">toIntArray</span>()
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button>list.<span class="fn">toIntArray</span>()
 <span class="fn">intArrayOf</span>(<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>).<span class="fn">toMutableList</span>()
 list.<span class="fn">toTypedArray</span>()</div>
         </div>
         <div class="card" data-ops="sort sorted comparator">
           <div class="card-op">Sort with comparator</div>
-          <div class="card-code">list.<span class="fn">sortWith</span>(<span class="fn">compareBy</span> { it })
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button>list.<span class="fn">sortWith</span>(<span class="fn">compareBy</span> { it })
 list.<span class="fn">sortWith</span>(<span class="fn">compareByDescending</span> { it })
 list.<span class="fn">sortedBy</span> { it.length }  <span class="cmt">// new list</span></div>
         </div>
@@ -471,39 +521,39 @@ list.<span class="fn">sortedBy</span> { it.length }  <span class="cmt">// new li
       <div class="cards">
         <div class="card" data-ops="create init hashmap mutablemap">
           <div class="card-op">Create</div>
-          <div class="card-code"><span class="kw">val</span> map = <span class="fn">mutableMapOf</span>&lt;String, Int&gt;()
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">val</span> map = <span class="fn">mutableMapOf</span>&lt;String, Int&gt;()
 <span class="kw">val</span> freq = <span class="fn">HashMap</span>&lt;Char, Int&gt;()
 <span class="kw">val</span> pre = <span class="fn">mutableMapOf</span>(<span class="str">"a"</span> to <span class="num">1</span>, <span class="str">"b"</span> to <span class="num">2</span>)</div>
         </div>
         <div class="card" data-ops="put get getordefault getorput access">
           <div class="card-op">Put / get</div>
-          <div class="card-code">map[<span class="str">"a"</span>] = <span class="num">1</span>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button>map[<span class="str">"a"</span>] = <span class="num">1</span>
 map[<span class="str">"a"</span>]                      <span class="cmt">// Int? (nullable)</span>
 map.<span class="fn">getOrDefault</span>(<span class="str">"b"</span>, <span class="num">0</span>)
 map.<span class="fn">getOrPut</span>(<span class="str">"c"</span>) { <span class="num">0</span> }       <span class="cmt">// insert if absent</span></div>
         </div>
         <div class="card" data-ops="frequency count char string">
           <div class="card-op">Frequency count</div>
-          <div class="card-code"><span class="kw">for</span> (c <span class="kw">in</span> s)
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">for</span> (c <span class="kw">in</span> s)
     freq[c] = freq.<span class="fn">getOrDefault</span>(c, <span class="num">0</span>) + <span class="num">1</span>
 <span class="cmt">// or shorter:</span>
 <span class="kw">for</span> (c <span class="kw">in</span> s) freq[c] = (freq[c] ?: <span class="num">0</span>) + <span class="num">1</span></div>
         </div>
         <div class="card" data-ops="iterate keys values entries foreach">
           <div class="card-op">Iterate</div>
-          <div class="card-code"><span class="kw">for</span> ((k, v) <span class="kw">in</span> map) { }
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">for</span> ((k, v) <span class="kw">in</span> map) { }
 map.<span class="fn">forEach</span> { k, v -> }
 map.keys; map.values; map.entries</div>
         </div>
         <div class="card" data-ops="contains remove check exists putifabsent">
           <div class="card-op">Conditional ops</div>
-          <div class="card-code">map.<span class="fn">containsKey</span>(<span class="str">"a"</span>)     <span class="cmt">// or: "a" in map</span>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button>map.<span class="fn">containsKey</span>(<span class="str">"a"</span>)     <span class="cmt">// or: "a" in map</span>
 map.<span class="fn">remove</span>(<span class="str">"a"</span>)
 map.<span class="fn">putIfAbsent</span>(<span class="str">"b"</span>, <span class="num">0</span>)</div>
         </div>
         <div class="card" data-ops="groupby group partition adjacency">
           <div class="card-op">Group by</div>
-          <div class="card-code"><span class="kw">val</span> grouped = list.<span class="fn">groupBy</span> { it % <span class="num">2</span> }
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">val</span> grouped = list.<span class="fn">groupBy</span> { it % <span class="num">2</span> }
 <span class="cmt">// Map&lt;Int, List&lt;Int&gt;&gt;</span>
 
 <span class="cmt">// Adjacency list:</span>
@@ -525,26 +575,26 @@ edges.<span class="fn">forEach</span> { (u, v) ->
       <div class="cards">
         <div class="card" data-ops="create init hashset mutableset">
           <div class="card-op">Create</div>
-          <div class="card-code"><span class="kw">val</span> seen = <span class="fn">mutableSetOf</span>&lt;Int&gt;()
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">val</span> seen = <span class="fn">mutableSetOf</span>&lt;Int&gt;()
 <span class="kw">val</span> s = <span class="fn">HashSet</span>&lt;String&gt;()</div>
         </div>
         <div class="card" data-ops="add contains check in">
           <div class="card-op">Add / contains</div>
-          <div class="card-code">seen.<span class="fn">add</span>(<span class="num">5</span>)
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button>seen.<span class="fn">add</span>(<span class="num">5</span>)
 seen.<span class="fn">contains</span>(<span class="num">5</span>)   <span class="cmt">// true</span>
 <span class="num">5</span> <span class="kw">in</span> seen           <span class="cmt">// idiomatic</span>
 seen.<span class="fn">remove</span>(<span class="num">5</span>)</div>
         </div>
         <div class="card" data-ops="intersect union subtract difference">
           <div class="card-op">Set operations</div>
-          <div class="card-code">a <span class="fn">intersect</span> b      <span class="cmt">// common elements</span>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button>a <span class="fn">intersect</span> b      <span class="cmt">// common elements</span>
 a <span class="fn">union</span> b          <span class="cmt">// all elements</span>
 a <span class="fn">subtract</span> b       <span class="cmt">// a minus b</span>
 a - b               <span class="cmt">// same as subtract</span></div>
         </div>
         <div class="card" data-ops="dedup distinct unique list">
           <div class="card-op">Dedup a list</div>
-          <div class="card-code">list.<span class="fn">toHashSet</span>().<span class="fn">toList</span>()
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button>list.<span class="fn">toHashSet</span>().<span class="fn">toList</span>()
 <span class="cmt">// or idiomatic:</span>
 list.<span class="fn">distinct</span>()</div>
         </div>
@@ -560,18 +610,18 @@ list.<span class="fn">distinct</span>()</div>
       <div class="cards">
         <div class="card" data-ops="create init stack">
           <div class="card-op">Create</div>
-          <div class="card-code"><span class="kw">val</span> stack = <span class="fn">ArrayDeque</span>&lt;Int&gt;()</div>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">val</span> stack = <span class="fn">ArrayDeque</span>&lt;Int&gt;()</div>
         </div>
         <div class="card" data-ops="push pop peek top">
           <div class="card-op">Push / pop / peek</div>
-          <div class="card-code">stack.<span class="fn">addLast</span>(x)    <span class="cmt">// push</span>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button>stack.<span class="fn">addLast</span>(x)    <span class="cmt">// push</span>
 stack.<span class="fn">removeLast</span>()  <span class="cmt">// pop</span>
 stack.<span class="fn">last</span>()         <span class="cmt">// peek (no remove)</span>
 stack.<span class="fn">isEmpty</span>()</div>
         </div>
         <div class="card" data-ops="monotonic stack next greater smaller">
           <div class="card-op">Monotonic stack</div>
-          <div class="card-code"><span class="kw">val</span> mono = <span class="fn">ArrayDeque</span>&lt;Int&gt;()
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">val</span> mono = <span class="fn">ArrayDeque</span>&lt;Int&gt;()
 <span class="kw">for</span> (x <span class="kw">in</span> nums) {
     <span class="kw">while</span> (mono.<span class="fn">isNotEmpty</span>() && mono.<span class="fn">last</span>() > x)
         mono.<span class="fn">removeLast</span>()
@@ -581,7 +631,7 @@ stack.<span class="fn">isEmpty</span>()</div>
         </div>
         <div class="card" data-ops="valid parentheses bracket matching">
           <div class="card-op">Valid parentheses</div>
-          <div class="card-code"><span class="kw">val</span> stack = <span class="fn">ArrayDeque</span>&lt;Char&gt;()
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">val</span> stack = <span class="fn">ArrayDeque</span>&lt;Char&gt;()
 <span class="kw">val</span> pairs = <span class="fn">mapOf</span>(')' to '(', ']' to '[', '}' to '{')
 <span class="kw">for</span> (c <span class="kw">in</span> s) {
     <span class="kw">if</span> (c <span class="kw">in</span> pairs.values) stack.<span class="fn">addLast</span>(c)
@@ -602,18 +652,18 @@ stack.<span class="fn">isEmpty</span>()</div>
       <div class="cards">
         <div class="card" data-ops="create init queue">
           <div class="card-op">Create</div>
-          <div class="card-code"><span class="kw">val</span> q = <span class="fn">ArrayDeque</span>&lt;Int&gt;()</div>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">val</span> q = <span class="fn">ArrayDeque</span>&lt;Int&gt;()</div>
         </div>
         <div class="card" data-ops="enqueue dequeue poll offer peek front">
           <div class="card-op">Enqueue / dequeue</div>
-          <div class="card-code">q.<span class="fn">addLast</span>(x)      <span class="cmt">// enqueue</span>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button>q.<span class="fn">addLast</span>(x)      <span class="cmt">// enqueue</span>
 q.<span class="fn">removeFirst</span>()   <span class="cmt">// dequeue</span>
 q.<span class="fn">first</span>()          <span class="cmt">// peek front</span>
 q.<span class="fn">isEmpty</span>()</div>
         </div>
         <div class="card" data-ops="bfs breadth first search graph level">
           <div class="card-op">BFS skeleton</div>
-          <div class="card-code">q.<span class="fn">addLast</span>(start)
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button>q.<span class="fn">addLast</span>(start)
 <span class="kw">val</span> visited = <span class="fn">mutableSetOf</span>(start)
 <span class="kw">while</span> (q.<span class="fn">isNotEmpty</span>()) {
     <span class="kw">val</span> node = q.<span class="fn">removeFirst</span>()
@@ -627,7 +677,7 @@ q.<span class="fn">isEmpty</span>()</div>
         </div>
         <div class="card" data-ops="bfs level order shortest path distance">
           <div class="card-op">Level-order BFS</div>
-          <div class="card-code"><span class="kw">var</span> level = <span class="num">0</span>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">var</span> level = <span class="num">0</span>
 q.<span class="fn">addLast</span>(start)
 <span class="kw">while</span> (q.<span class="fn">isNotEmpty</span>()) {
     <span class="kw">repeat</span>(q.size) {          <span class="cmt">// snapshot size each level</span>
@@ -651,20 +701,20 @@ q.<span class="fn">addLast</span>(start)
       <div class="cards">
         <div class="card" data-ops="min heap create init">
           <div class="card-op">Min-heap</div>
-          <div class="card-code"><span class="kw">val</span> minH = <span class="fn">PriorityQueue</span>&lt;Int&gt;()
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">val</span> minH = <span class="fn">PriorityQueue</span>&lt;Int&gt;()
 minH.<span class="fn">offer</span>(<span class="num">5</span>); minH.<span class="fn">offer</span>(<span class="num">1</span>)
 minH.<span class="fn">peek</span>()   <span class="cmt">// 1 (min, no remove)</span>
 minH.<span class="fn">poll</span>()   <span class="cmt">// removes & returns min</span></div>
         </div>
         <div class="card" data-ops="max heap reverseorder descending">
           <div class="card-op">Max-heap</div>
-          <div class="card-code"><span class="kw">val</span> maxH = <span class="fn">PriorityQueue</span>&lt;Int&gt;(<span class="fn">reverseOrder</span>())
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">val</span> maxH = <span class="fn">PriorityQueue</span>&lt;Int&gt;(<span class="fn">reverseOrder</span>())
 <span class="cmt">// or:</span>
 <span class="fn">PriorityQueue</span>(<span class="fn">compareByDescending</span> { it })</div>
         </div>
         <div class="card" data-ops="custom comparator pair object sort">
           <div class="card-op">Custom comparator</div>
-          <div class="card-code"><span class="cmt">// Sort pairs by second value ascending</span>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="cmt">// Sort pairs by second value ascending</span>
 <span class="kw">val</span> pq = <span class="fn">PriorityQueue</span>&lt;IntArray&gt;(<span class="fn">compareBy</span> { it[<span class="num">1</span>] })
 pq.<span class="fn">offer</span>(<span class="fn">intArrayOf</span>(<span class="num">1</span>, <span class="num">5</span>))
 
@@ -673,7 +723,7 @@ pq.<span class="fn">offer</span>(<span class="fn">intArrayOf</span>(<span class=
         </div>
         <div class="card" data-ops="k smallest largest top k heap">
           <div class="card-op">K smallest / K largest</div>
-          <div class="card-code"><span class="cmt">// K smallest → max-heap of size K</span>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="cmt">// K smallest → max-heap of size K</span>
 <span class="kw">val</span> kSmall = <span class="fn">PriorityQueue</span>&lt;Int&gt;(<span class="fn">reverseOrder</span>())
 <span class="kw">for</span> (n <span class="kw">in</span> nums) {
     kSmall.<span class="fn">offer</span>(n)
@@ -683,7 +733,7 @@ pq.<span class="fn">offer</span>(<span class="fn">intArrayOf</span>(<span class=
         </div>
         <div class="card" data-ops="dijkstra shortest path weighted graph">
           <div class="card-op">Dijkstra skeleton</div>
-          <div class="card-code"><span class="kw">val</span> dist = <span class="fn">IntArray</span>(n) { <span class="fn">Int</span>.MAX_VALUE }
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">val</span> dist = <span class="fn">IntArray</span>(n) { <span class="fn">Int</span>.MAX_VALUE }
 dist[src] = <span class="num">0</span>
 <span class="kw">val</span> pq = <span class="fn">PriorityQueue</span>&lt;IntArray&gt;(<span class="fn">compareBy</span> { it[<span class="num">0</span>] })
 pq.<span class="fn">offer</span>(<span class="fn">intArrayOf</span>(<span class="num">0</span>, src))   <span class="cmt">// [dist, node]</span>
@@ -710,7 +760,7 @@ pq.<span class="fn">offer</span>(<span class="fn">intArrayOf</span>(<span class=
       <div class="cards">
         <div class="card" data-ops="all ops addfirst addlast removefirst removelast">
           <div class="card-op">All ops</div>
-          <div class="card-code"><span class="kw">val</span> dq = <span class="fn">ArrayDeque</span>&lt;Int&gt;()
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">val</span> dq = <span class="fn">ArrayDeque</span>&lt;Int&gt;()
 dq.<span class="fn">addFirst</span>(x);   dq.<span class="fn">addLast</span>(x)
 dq.<span class="fn">removeFirst</span>(); dq.<span class="fn">removeLast</span>()
 dq.<span class="fn">first</span>();        dq.<span class="fn">last</span>()
@@ -718,7 +768,7 @@ dq.<span class="fn">peekFirst</span>();    dq.<span class="fn">peekLast</span>()
         </div>
         <div class="card" data-ops="sliding window max maximum monotonic deque">
           <div class="card-op">Sliding window max</div>
-          <div class="card-code"><span class="kw">val</span> dq = <span class="fn">ArrayDeque</span>&lt;Int&gt;()  <span class="cmt">// stores indices</span>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">val</span> dq = <span class="fn">ArrayDeque</span>&lt;Int&gt;()  <span class="cmt">// stores indices</span>
 <span class="kw">for</span> (i <span class="kw">in</span> nums.indices) {
     <span class="cmt">// drop indices outside window</span>
     <span class="kw">while</span> (dq.<span class="fn">isNotEmpty</span>() && dq.<span class="fn">first</span>() < i - k + <span class="num">1</span>)
@@ -734,11 +784,143 @@ dq.<span class="fn">peekFirst</span>();    dq.<span class="fn">peekLast</span>()
       </div>
     </div>
 
+
+    <!-- ── STRINGS ── -->
+    <div class="section" data-ds="strings" id="sec-strings">
+      <div class="section-header">
+        <span class="section-tag" style="background:#2e2240;color:#9b81db">Strings & StringBuilder</span>
+        <span class="section-note">Immutable Strings · O(1) amortised append in Builder</span>
+      </div>
+      <div class="cards">
+        <div class="card" data-ops="string create init length substring">
+          <div class="card-op">String operations</div>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">val</span> s = <span class="str">"hello"</span>
+s.<span class="fn">length</span>
+s.<span class="fn">substring</span>(<span class="num">1</span>, <span class="num">4</span>)   <span class="cmt">// "ell" (end exclusive)</span>
+s.<span class="fn">get</span>(<span class="num">0</span>)            <span class="cmt">// or s[0]</span>
+s.<span class="fn">toCharArray</span>()</div>
+        </div>
+        <div class="card" data-ops="stringbuilder append mutate">
+          <div class="card-op">StringBuilder</div>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">val</span> sb = <span class="fn">StringBuilder</span>()
+sb.<span class="fn">append</span>(<span class="str">"a"</span>)
+sb.<span class="fn">append</span>(<span class="num">1</span>)
+sb.<span class="fn">deleteCharAt</span>(sb.lastIndex)
+sb.<span class="fn">toString</span>()</div>
+        </div>
+        <div class="card" data-ops="split join string format">
+          <div class="card-op">Split & Join</div>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">val</span> parts = s.<span class="fn">split</span>(<span class="str">" "</span>)
+<span class="kw">val</span> joined = list.<span class="fn">joinToString</span>(<span class="str">"-"</span>)
+<span class="cmt">// default is ", "</span>
+list.<span class="fn">joinToString</span>(<span class="str">""</span>) { it.toString() }</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TREES & GRAPHS ── -->
+    <div class="section" data-ds="trees" id="sec-trees">
+      <div class="section-header">
+        <span class="section-tag" style="background:#1b2e08;color:#85d62c">Trees & Graphs</span>
+        <span class="section-note">DFS / BFS traversal · Common structures</span>
+      </div>
+      <div class="cards">
+        <div class="card" data-ops="tree node class data">
+          <div class="card-op">TreeNode Definition</div>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">class</span> TreeNode(<span class="kw">var</span> `val`: Int) {
+    <span class="kw">var</span> left: TreeNode? = <span class="kw">null</span>
+    <span class="kw">var</span> right: TreeNode? = <span class="kw">null</span>
+}</div>
+        </div>
+        <div class="card" data-ops="dfs recursion tree postorder inorder preorder">
+          <div class="card-op">DFS (Recursive)</div>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">fun</span> <span class="fn">dfs</span>(node: TreeNode?) {
+    <span class="kw">if</span> (node == <span class="kw">null</span>) <span class="kw">return</span>
+    <span class="cmt">// Pre-order: process node here</span>
+    <span class="fn">dfs</span>(node.left)
+    <span class="cmt">// In-order: process node here</span>
+    <span class="fn">dfs</span>(node.right)
+    <span class="cmt">// Post-order: process node here</span>
+}</div>
+        </div>
+
+        <div class="card" data-ops="dfs iterative stack tree graph search">
+          <div class="card-op">DFS (Iterative)</div>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">val</span> stack = <span class="fn">ArrayDeque</span>&lt;TreeNode&gt;()
+stack.<span class="fn">addLast</span>(root)
+<span class="kw">while</span> (stack.<span class="fn">isNotEmpty</span>()) {
+    <span class="kw">val</span> node = stack.<span class="fn">removeLast</span>()
+    <span class="cmt">// process node</span>
+    <span class="kw">if</span> (node.right != <span class="kw">null</span>) stack.<span class="fn">addLast</span>(node.right!!)
+    <span class="kw">if</span> (node.left != <span class="kw">null</span>) stack.<span class="fn">addLast</span>(node.left!!)
+}</div>
+        </div>
+        <div class="card" data-ops="graph adjacency list representation">
+          <div class="card-op">Graph Adjacency List</div>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="cmt">// Using Array of Lists (faster if n known)</span>
+<span class="kw">val</span> adj = <span class="fn">Array</span>(n) { <span class="fn">mutableListOf</span>&lt;Int&gt;() }
+<span class="kw">for</span> ((u, v) <span class="kw">in</span> edges) {
+    adj[u].<span class="fn">add</span>(v)
+    adj[v].<span class="fn">add</span>(u) <span class="cmt">// if undirected</span>
+}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ADVANCED PATTERNS ── -->
+    <div class="section" data-ds="advanced" id="sec-advanced">
+      <div class="section-header">
+        <span class="section-tag" style="background:#352200;color:#f0ad4e">Advanced Patterns</span>
+        <span class="section-note">DP · Backtracking · Union-Find</span>
+      </div>
+      <div class="cards">
+        <div class="card" data-ops="union find disjoint set dsu">
+          <div class="card-op">Union-Find (DSU)</div>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">class</span> DSU(n: Int) {
+    <span class="kw">val</span> parent = <span class="fn">IntArray</span>(n) { it }
+    <span class="kw">fun</span> <span class="fn">find</span>(i: Int): Int {
+        <span class="kw">if</span> (parent[i] == i) <span class="kw">return</span> i
+        parent[i] = <span class="fn">find</span>(parent[i]) <span class="cmt">// path compression</span>
+        <span class="kw">return</span> parent[i]
+    }
+    <span class="kw">fun</span> <span class="fn">union</span>(i: Int, j: Int) {
+        <span class="kw">val</span> rootI = <span class="fn">find</span>(i); <span class="kw">val</span> rootJ = <span class="fn">find</span>(j)
+        <span class="kw">if</span> (rootI != rootJ) parent[rootI] = rootJ
+    }
+}</div>
+        </div>
+        <div class="card" data-ops="backtracking recursion permutations subsets">
+          <div class="card-op">Backtracking Skeleton</div>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">fun</span> <span class="fn">backtrack</span>(start: Int, path: <span class="fn">MutableList</span>&lt;Int&gt;) {
+    res.<span class="fn">add</span>(<span class="fn">ArrayList</span>(path)) <span class="cmt">// save copy</span>
+    <span class="kw">for</span> (i <span class="kw">in</span> start until nums.size) {
+        path.<span class="fn">add</span>(nums[i])      <span class="cmt">// choose</span>
+        <span class="fn">backtrack</span>(i + <span class="num">1</span>, path) <span class="cmt">// explore</span>
+        path.<span class="fn">removeLast</span>()      <span class="cmt">// un-choose</span>
+    }
+}</div>
+        </div>
+        <div class="card" data-ops="dynamic programming dp memoization cache">
+          <div class="card-op">DP (Memoization)</div>
+          <div class="card-code"><button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">val</span> memo = <span class="fn">HashMap</span>&lt;String, Int&gt;() <span class="cmt">// or IntArray if 1D</span>
+<span class="kw">fun</span> <span class="fn">dp</span>(i: Int, j: Int): Int {
+    <span class="kw">if</span> (baseCase) <span class="kw">return</span> <span class="num">0</span>
+    <span class="kw">val</span> key = <span class="str">"$i,$j"</span>
+    <span class="kw">if</span> (key <span class="kw">in</span> memo) <span class="kw">return</span> memo[key]!!
+
+    <span class="kw">val</span> res = <span class="fn">minOf</span>(<span class="fn">dp</span>(i+<span class="num">1</span>, j), <span class="fn">dp</span>(i, j+<span class="num">1</span>))
+    memo[key] = res
+    <span class="kw">return</span> res
+}</div>
+        </div>
+      </div>
+    </div>
+
   </main>
 </div>
 
 <script>
-  const ALL_DS = ['array','list','map','set','stack','queue','pq','deque'];
+  const ALL_DS = ['array','list','map','set','stack','queue','pq','deque','strings','trees','advanced'];
 
   function show(id) {
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -816,6 +998,64 @@ dq.<span class="fn">peekFirst</span>();    dq.<span class="fn">peekLast</span>()
       filterCards('');
     }
   });
+
+
+  function toggleTheme() {
+    const root = document.documentElement;
+    const isLight = root.getAttribute('data-theme') === 'light';
+    const newTheme = isLight ? 'dark' : 'light';
+    root.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    updateThemeIcon();
+  }
+
+  function updateThemeIcon() {
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    document.getElementById('moon-icon').classList.toggle('hidden', !isLight);
+    document.getElementById('sun-icon').classList.toggle('hidden', isLight);
+  }
+
+
+  // Make sections collapsible
+  document.querySelectorAll('.section-header').forEach(header => {
+    header.style.cursor = 'pointer';
+    // add an icon or just toggle
+    header.addEventListener('click', () => {
+      const cards = header.nextElementSibling;
+      if (cards && (cards.classList.contains('cards') || cards.classList.contains('complexity-table') || cards.classList.contains('tip-grid'))) {
+        cards.classList.toggle('hidden');
+        if (cards.classList.contains('hidden')) {
+            header.style.opacity = '0.6';
+        } else {
+            header.style.opacity = '1';
+        }
+      }
+    });
+  });
+
+  // Call once on load
+  document.addEventListener('DOMContentLoaded', updateThemeIcon);
+
+  function copyCode(btn) {
+    const codeContainer = btn.parentElement;
+    // Get text, ignoring the button itself
+    let text = '';
+    for (let node of codeContainer.childNodes) {
+      if (node.nodeType === Node.TEXT_NODE) text += node.textContent;
+      else if (node.nodeType === Node.ELEMENT_NODE && !node.classList.contains('copy-btn')) {
+        text += node.textContent;
+      }
+    }
+    navigator.clipboard.writeText(text.trim()).then(() => {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+
 </script>
 </body>
 </html>
